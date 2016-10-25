@@ -30,7 +30,7 @@ public class SpeechExample {
         SpeechToText service = new SpeechToText();
         service.setUsernameAndPassword(props.getProperty("SPEECH_TO_TEXT_USERNAME"), props.getProperty("SPEECH_TO_TEXT_PASSWORD"));
 
-        // Signed PCM AudioFormat with 16kHz, 16 bit sample size, mono
+        // Signed PCM AudioFormat with 16kHz, 16 bit sample size, mono, signed, bigEndian
         int sampleRate = 16000;
         AudioFormat format = new AudioFormat(sampleRate, 16, 1, true, false);
         DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
@@ -54,9 +54,24 @@ public class SpeechExample {
                 .build();
 
         service.recognizeUsingWebSocket(audio, options, new BaseRecognizeCallback() {
+            private int lastLineLength = 0;
             @Override
             public void onTranscription(SpeechResults speechResults) {
-                System.out.println(speechResults);
+                // first backspace whatever was leftover
+                System.out.print(new String(new char[lastLineLength]).replace("\0", "\b"));
+
+                // pull the first transcript out
+                String line = speechResults.getResults().get(0).getAlternatives().get(0).getTranscript();
+
+                if (speechResults.getResults().get(0).isFinal()) {
+                    // for final results
+                    System.out.println(line);
+                    lastLineLength = 0; // reset for the next line
+                } else {
+                    // print the current results so far
+                    System.out.print(line);
+                    lastLineLength = line.length();
+                }
             }
         });
 
