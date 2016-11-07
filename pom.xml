@@ -7,6 +7,12 @@
     <version>1.0-SNAPSHOT</version>
     <name>Devoxx BE 2016 IBM Watson Demos</name>
     <url>https://github.com/nfriedly/Devoxx-BE-2016</url>
+
+
+    <properties>
+        <jdk.version>1.8</jdk.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.ibm.watson.developer_cloud</groupId>
@@ -23,8 +29,68 @@
             <artifactId>language-translator</artifactId>
             <version>3.5.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.ibm.watson.developer_cloud</groupId>
+            <artifactId>visual-recognition</artifactId>
+            <version>3.5.1</version>
+        </dependency>
     </dependencies>
+
+
     <build>
         <finalName>java-demos</finalName>
+        <plugins>
+            <!--&lt;!&ndash; Set a JDK compiler level &ndash;&gt;-->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-compiler-plugin</artifactId>-->
+                <!--<version>2.3.2</version>-->
+                <!--<configuration>-->
+                    <!--<source>${jdk.version}</source>-->
+                    <!--<target>${jdk.version}</target>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+
+            <!-- Make this jar executable -->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-jar-plugin</artifactId>-->
+                <!--<version>3.0.2</version>-->
+                <!--<configuration>-->
+                    <!--&lt;!&ndash; DO NOT include log4j.properties file in your Jar &ndash;&gt;-->
+                    <!--<excludes>-->
+                        <!--<exclude>**/log4j.properties</exclude>-->
+                    <!--</excludes>-->
+                    <!--<archive>-->
+                        <!--<manifest>-->
+                            <!--<mainClass>com.watson.devoxx.MicToConsole</mainClass>-->
+                        <!--</manifest>-->
+                    <!--</archive>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+
+            <!-- include dependencies in the jar (not working?) -->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.watson.devoxx.MicToConsole</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 </project>
